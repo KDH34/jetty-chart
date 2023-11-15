@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from "react";
-// import './radarShape.css'
 
 const polarToX = (angle, distance) => Math.cos(angle - Math.PI / 2) * distance;
 
@@ -75,6 +74,7 @@ const scale = (options, value) => (
     key={`circle-${value}`}
     cx={0}
     cy={0}
+    fill="red"
     r={(value * options.chartSize) / 2}
     {...options.scaleProps(value)}
   />
@@ -120,10 +120,16 @@ const Render = (captions, chartData, options = {}) => {
     }
   }
 
+  const dotelementsRef = useRef([])
+  const dotRef = (el) => {
+    if (el && !dotelementsRef.current.includes(el)) {
+      dotelementsRef.current.push(el)
+    } 
+  }
+
   useEffect(() => {
     if (options.animationOn) {
       chartData.map((d, key) => {
-        console.log(options.animationOn)
         const path = PathelementsRef.current[key]
         const originalPath = "M0.0000,0.0000L0.0000,0.0000L0.0000,0.0000L0.0000,0.0000L0.0000,0.0000z";
         const targetPath = path.getAttribute('d')
@@ -152,6 +158,34 @@ const Render = (captions, chartData, options = {}) => {
         requestAnimationFrame(animatePath);
   
       })
+    chartData.map((d, key) => {
+      const path = PathelementsRef.current[key]
+        const originalPath = "M0.0000,0.0000L0.0000,0.0000L0.0000,0.0000L0.0000,0.0000L0.0000,0.0000z";
+        const targetPath = path.getAttribute('d')
+        let currentIteration = 0;
+        const totalIterations = 100
+      
+        const animatePath = () => {
+          currentIteration++;
+    
+          const newPath = originalPath.split(/[\s,MLz]+/).map((originalCoord, index) => {
+            if (originalCoord !== '') {
+              const targetCoord = targetPath.split(/[\s,MLz]+/)[index];
+              const diff = (targetCoord - originalCoord) / totalIterations;
+              const val = parseFloat(originalCoord) + diff * currentIteration;
+              return val.toFixed(4);
+            }
+            return null;
+          });
+    
+          path.setAttribute('d', `M${newPath[1]},${newPath[2]}L${newPath[3]},${newPath[4]}L${newPath[5]},${newPath[6]}L${newPath[7]},${newPath[8]}L${newPath[9]},${newPath[10]}z`);
+    
+          if (currentIteration < totalIterations) {
+            requestAnimationFrame(animatePath);
+          }
+        };
+        requestAnimationFrame(animatePath);
+    })
     }
     else {
       
@@ -167,6 +201,8 @@ const Render = (captions, chartData, options = {}) => {
       angle: angle,
     };
   });
+
+  const tooltips = []
 
   const groups = 
   [
@@ -192,6 +228,8 @@ const Render = (captions, chartData, options = {}) => {
     chartData.map((d, key) => {
       const data = d.data
       const meta = d.meta || {};
+      const keyList = Object.keys(options)
+      const dataList = Object.values(data)
       const extraProps = options.shapeProps(meta);
       let extraPropsSvg = {};
       if (!meta.fill) {
@@ -206,7 +244,6 @@ const Render = (captions, chartData, options = {}) => {
       if (meta.strokeLinecap) {
         extraPropsSvg.strokeLinecap = meta.strokeLinecap;
       }
-      console.log(data, key)
       groups.push(<path
         id={`shape-${key}`}
         key={`shape-${key}`}
@@ -230,11 +267,21 @@ const Render = (captions, chartData, options = {}) => {
         opacity={meta.opacity}
         className={[extraProps.className, meta.class].join(" ")}
         />)
+      dataList.map((d,idx) => {
+        console.log(captions)
+        tooltips.push(<div>{keyList[idx]} : {d}</div>)
+      })
     })
   }
 
   const delta = (options.size / 2).toFixed(4);
-  return <g transform={`translate(${delta},${delta})`}>{groups}</g>;
+  return (
+  <>
+  <g transform={`translate(${delta},${delta})`}>{groups}</g>
+  <div>{tooltips}</div>
+  
+  </>
+  );
 
 
   
