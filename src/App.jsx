@@ -1,5 +1,69 @@
 import RadarChart from "./jetty-chart/src/radar/RadarChart";
+import { StackedBar } from "jetty-chart";
 
+
+const chartdata = [
+  {
+      "value": [
+          38,
+          28,
+          44,
+          98,
+          21
+      ],
+      label: "x1"
+  },
+  {
+      value: [
+          15,
+          64,
+          61,
+          37,
+          67
+      ],
+      label: "x2"
+  },
+  {
+      value: [
+          28,
+          98,
+          83,
+          46,
+          45
+      ],
+      label: "x3"
+  },
+  {
+      value: [
+          89,
+          69,
+          18,
+          55,
+          78
+      ],
+      label: "x4"
+  },
+  {
+      value: [
+          63,
+          25,
+          34,
+          12,
+          20
+      ],
+      label: "x5"
+  },
+  {
+      value: [
+          70,
+          50,
+          54,
+          82,
+          61
+      ],
+      label: "x6"
+  }
+];
 const data = [
   {
     name: "with color",
@@ -53,6 +117,23 @@ function App() {
         <div style={{margin:"25%"}}>
           <RadarChart
           />
+          <StackedBar data={chartdata}
+          xLegend={"x-legend"}
+          yLegend={"y-legend"}
+          normalSettings={{
+              colorPalette: [
+                  "#b388eb",
+                  "#8093f1",
+                  "#72ddf7",
+                  "#dfccff",
+                  "#fdc5f5"
+              ],
+              horizontal: true
+          }}
+          scopeSettings={{
+              autoScope: false,
+              maxScope: "400"
+          }}/>
         </div>
         </div>
   );

@@ -14,78 +14,77 @@ const setViewBox = options =>
   }`;
 
 
-const radarOptions = {
-  size: 300,
-  axes: true,
-  scales: 3, 
-  captions: true, 
-  dots: true, 
-  useValue: false,
-  defaultValue:300,
-  negativeNumber: false,
-  animationOn:true,
-  zoomDistance: 1.2, 
-  smoothing: noSmoothing, 
-  captionMargin: 10,
-  setViewBox,
-  axisProps: () => ({ className: 'axis' }),
-  scaleProps: () => ({ className: 'scale', fill: 'none' }),
-  shapeProps: () => ({ className: 'shape' }),
-  dotProps: () => ({
-    className: 'dot',
-  }),
-  captionProps: () => ({
+
+const normalRadarSetting = {
+  normalSetting:{
+    size: 300,
+    animationOn: true,
+    zoomDistance: 1.2,
+    rotation: 0,
+    marginTop:0,
+    marginBottom:0,
+    marginLeft:0,
+    marginRight:0,
+    maxValue:0,
+    viewBox: ""
+  },
+  scaleSetting: {
+    scales: 3,
+    useValue: false,
+    defaultValue: 300,
+    negativeNumber: false,
+    fill: "#fafafa",
+    stroke: "#999",
+    strokeWidth: ".2",
+  },
+  axisSetting: {
+    axes: true,
+    color: "",
+    stroke: "",
+    strokewidth: ""
+  },
+  dotSetting: {
+    dots: true,
+    fill: "",
+  },
+  keySetting: {
+    keyMargin: 10,
+    wrapCaptionAt: 15,
+    captionLineHeight: 20,
     className: 'caption',
     textAnchor: 'middle',
     fontSize: 10,
     fontFamily: 'sans-serif',
-  }),
-  wrapCaptionAt: 15,
-  captionLineHeight: 20,
-  rotation: 0,
-  marginTop:0,
-  marginBottom:0,
-  marginLeft:0,
-  marginRight:0,
-  maxValue:0,
-};
-
-
-const options = {
-  scaleProps: () => ({
-    fill: "#fafafa",
-    stroke: "#999",
-    strokeWidth: ".2",
-  }),
-  // rotation:0,
+  }
 }
 
 
-
-export const checkRadarChart = ({radarOptions, data})=>{
+export const checkRadarChart = ({normalOptions, data})=>{
   const result = {
-    radarOptions, data
+    normalOptions, data
   };
 
-  const Checkedmargin = checkMargin({marginTop:result.radarOptions.marginTop, marginBottom:result.radarOptions.marginBottom, marginLeft:result.radarOptions.marginLeft,marginRight:result.radarOptions.marginRight});
-  result.radarOptions.marginTop = Checkedmargin.marginTop
-  result.radarOptions.marginRight = Checkedmargin.marginRight
-  result.radarOptions.marginBottom = Checkedmargin.marginBottom
-  result.radarOptions.marginLeft = Checkedmargin.marginLeft
+  const Checkedmargin = checkMargin({marginTop:result.normalOptions.marginTop, marginBottom:result.normalOptions.marginBottom, marginLeft:result.normalOptions.marginLeft,marginRight:result.normalOptions.marginRight});
+  result.normalOptions.marginTop = Checkedmargin.marginTop
+  result.normalOptions.marginRight = Checkedmargin.marginRight
+  result.normalOptions.marginBottom = Checkedmargin.marginBottom
+  result.normalOptions.marginLeft = Checkedmargin.marginLeft
 
-  result.radarOptions.maxValue = checkLimit(data)
+  result.normalOptions.maxValue = checkLimit(data)
 
 
-  if (result.radarOptions.useValue) {
-    result.radarOptions.maxValue =  result.radarOptions.defaultValue
+  if (result.normalOptions.useValue) {
+    result.normalOptions.maxValue =  result.normalOptions.defaultValue
   }
 
 
-  if (result.radarOptions.negativeNumber) {
-    result.data = checkNegative({data, maxValue: result.radarOptions.maxValue})
-    result.radarOptions.maxValue = checkLimit(data)
+  if (result.normalOptions.negativeNumber) {
+    result.data = checkNegative({data, maxValue: result.normalOptions.maxValue})
+    result.normalOptions.maxValue = checkLimit(data)
     
   }
+
+
 
 
   return result;

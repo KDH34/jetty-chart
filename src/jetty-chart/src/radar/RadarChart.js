@@ -6,11 +6,11 @@ import { checkRadarChart } from '../common/radar-common/exception/check-radar-ex
 
 const data = [
       {
-        data: { value1: 75, value2: 60, value3: 60, value4: 50, value5: 40 },
+        data: { value1: 75, value2: 60, value3: 60, value4: 50, value5: 40, value6: 50 },
         meta: { color: "#8258FA", fill: "#8258FA", opacity: "25%" },
       },
       {
-        data: { value1: 20, value2: 20, value3: 20, value4: 20, value5: 20 },
+        data: { value1: 20, value2: 20, value3: 20, value4: 20, value5: 20, value6: 50 },
         meta: { color: "#81F7F3", fill: "#81F7F3", opacity: "100%" },
       },
       // {
@@ -41,7 +41,7 @@ const setViewBox = options =>
     options.size
   }`;
 
-  const radarOptions = {
+  const normalOptions = {
     size: 300,
     axes: true,
     scales: 3, 
@@ -78,32 +78,6 @@ const setViewBox = options =>
     maxValue:0,
   };
 
-const axisOptions = {
-  className: "axis",
-  color: "",
-  opacity: ""
-}
-
-const scaleOptions = {
-  className: "scale",
-  color: "",
-  fill: "",
-  strokeOpacity: "",
-  opacity: ""
-}
-
-const shapeOptions = {
-  className: "shape"
-}
-
-const dotOptions = {
-  className: "dot"
-}
-
-const captionOptions = {
-  className: "caption"
-}
-
 
 const keys = {
   value1: "Power",
@@ -111,15 +85,15 @@ const keys = {
   value3: "Run",
   value4: "Field",
   value5: "Arm",
-
+  value6: "Vision"
 }
 
 const RadarChart = (props) => {
   const id = props.id
-  const result = checkRadarChart({radarOptions, data})
-  const size = result.radarOptions.size
+  const result = checkRadarChart({normalOptions, data})
+  const size = result.normalOptions.size
   const chartOptions = {
-    ...result.radarOptions,
+    ...result.normalOptions,
     size,
   };
 

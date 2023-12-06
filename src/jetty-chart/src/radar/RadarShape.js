@@ -131,7 +131,11 @@ const Render = (captions, chartData, options = {}) => {
     if (options.animationOn) {
       chartData.map((d, key) => {
         const path = PathelementsRef.current[key]
-        const originalPath = "M0.0000,0.0000L0.0000,0.0000L0.0000,0.0000L0.0000,0.0000L0.0000,0.0000z";
+        const keyList = Object.keys(d.data)
+        const str1 = "M0.0000,"
+        const str2 = "0.0000L0.0000,"
+        const str3 = "0.0000z"
+        const originalPath = str1.concat(str2.repeat(keyList.length-1), str3)
         const targetPath = path.getAttribute('d')
         let currentIteration = 0;
         const totalIterations = 100
@@ -148,8 +152,18 @@ const Render = (captions, chartData, options = {}) => {
             }
             return null;
           });
-    
-          path.setAttribute('d', `M${newPath[1]},${newPath[2]}L${newPath[3]},${newPath[4]}L${newPath[5]},${newPath[6]}L${newPath[7]},${newPath[8]}L${newPath[9]},${newPath[10]}z`);
+          
+
+          const nstr1 = `M${newPath[1]},`
+          let nstr2 = ``
+          for (let i = 1; i <keyList.length; i++) {
+            nstr2 = nstr2.concat(`${newPath[i*2]}L${newPath[i*2+1]},`)
+          }
+          const nstr3 = `${newPath[newPath.length-2]}z`
+          const nstr = nstr1.concat(nstr2, nstr3)
+
+          path.setAttribute('d',
+          nstr);
     
           if (currentIteration < totalIterations) {
             requestAnimationFrame(animatePath);
@@ -158,34 +172,6 @@ const Render = (captions, chartData, options = {}) => {
         requestAnimationFrame(animatePath);
   
       })
-    chartData.map((d, key) => {
-      const path = PathelementsRef.current[key]
-        const originalPath = "M0.0000,0.0000L0.0000,0.0000L0.0000,0.0000L0.0000,0.0000L0.0000,0.0000z";
-        const targetPath = path.getAttribute('d')
-        let currentIteration = 0;
-        const totalIterations = 100
-      
-        const animatePath = () => {
-          currentIteration++;
-    
-          const newPath = originalPath.split(/[\s,MLz]+/).map((originalCoord, index) => {
-            if (originalCoord !== '') {
-              const targetCoord = targetPath.split(/[\s,MLz]+/)[index];
-              const diff = (targetCoord - originalCoord) / totalIterations;
-              const val = parseFloat(originalCoord) + diff * currentIteration;
-              return val.toFixed(4);
-            }
-            return null;
-          });
-    
-          path.setAttribute('d', `M${newPath[1]},${newPath[2]}L${newPath[3]},${newPath[4]}L${newPath[5]},${newPath[6]}L${newPath[7]},${newPath[8]}L${newPath[9]},${newPath[10]}z`);
-    
-          if (currentIteration < totalIterations) {
-            requestAnimationFrame(animatePath);
-          }
-        };
-        requestAnimationFrame(animatePath);
-    })
     }
     else {
       
@@ -250,6 +236,7 @@ const Render = (captions, chartData, options = {}) => {
         ref={pathRef}
         d={options.smoothing(
           columns.map((col) => {
+            console.log(col)
             const val = data[col.key];
             if ("number" !== typeof val) {
               throw new Error(`Data set ${key} is invalid.`);
@@ -268,7 +255,7 @@ const Render = (captions, chartData, options = {}) => {
         className={[extraProps.className, meta.class].join(" ")}
         />)
       dataList.map((d,idx) => {
-        console.log(captions)
+        // console.log(captions)
         tooltips.push(<div>{keyList[idx]} : {d}</div>)
       })
     })
