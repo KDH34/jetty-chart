@@ -45,7 +45,6 @@ export const DrawYAxisLabel = ({
 
   const totalLabelMargin = labelMargin + sideLineSize;
   const labelLocation = width + totalLabelMargin;
-  const prevYAxisKeys = Object.keys(prevYAxis.current);
   const ms = new Date().valueOf();
 
   if (translateLabel) {
@@ -60,16 +59,19 @@ export const DrawYAxisLabel = ({
           ? `translate(0,${labelOnLeft ? -totalLabelMargin : labelLocation})`
           : `translate(${labelOnLeft ? -totalLabelMargin : labelLocation})`
       }
+      className={styles.container}
     >
       {yAxis.map((c, idx) => {
         if (!showTopScope && (idx === 0 || idx === yAxis.length - 1) && c !== 0) {
-          return;
+          return <g key={"level-" + ms + "-" + idx + "-" + c}></g>;
         }
 
         const location = yAxisHeight * idx;
 
+        const nowKey = `y-axis-label-${c}`
+
         // 현재 위치 정보 저장
-        prevYAxisTemp.current[c] = location;
+        prevYAxisTemp.current[nowKey] = location;
 
         // 라인 리렌더링을 안할 경우
         let useTranslate = false;
@@ -77,15 +79,15 @@ export const DrawYAxisLabel = ({
 
         if (translateLabel) {
           // 이전 위치에 현재 위치가 포함되는지 확인
-          if (prevYAxisKeys.includes(String(c))) {
-            translate = location - prevYAxis.current[c];
+          if (Object.keys(prevYAxis.current).includes(nowKey)) {
+            translate = location - prevYAxis.current[nowKey];
             useTranslate = true;
           }
         }
-
+        
         return (
           <g
-            key={"level-" + ms + "-" + c}
+            key={"level-" + ms + "-" + idx + "-" + c}
             transform={horizontal ? `translate(${location - translate})` : `translate(0,${location - translate})`}
             className={useAnimation ? (useTranslate ? styles.translateLabel : renderType === "fade" ? styles.fadeLabel : "") : ""}
             style={{
